@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from config import config as app_config
+from src.main import config as app_config
 from src.infrastructure.db.models.base import Base
 from src.infrastructure.db.models.product import ProductModel
 # this is the Alembic Config object, which provides
@@ -16,7 +16,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", app_config.db.url + "?async_fallback=True")
+config.set_main_option("sqlalchemy.url", app_config.postgres.db_url + "?async_fallback=True")
 
 # add your model's MetaData object here
 # for 'autogenerate' support
