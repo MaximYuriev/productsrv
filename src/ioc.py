@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, AsyncIterable
+from typing import AsyncIterable
 
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession

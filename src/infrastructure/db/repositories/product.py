@@ -20,7 +20,7 @@ class ProductRepository(IProductRepository):
             price=product.price,
         )
 
-    async def save(self, product: Product) -> None:
+    async def add(self, product: Product) -> None:
         product_model = self._convert_domain_to_model(product)
         self._session.add(product_model)
         await self._session.commit()

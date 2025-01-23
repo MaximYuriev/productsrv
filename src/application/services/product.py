@@ -9,4 +9,4 @@ class ProductService:
 
     async def create_new_product(self, created_product: ProductDTO) -> None:
         product = Product(**created_product.__dict__)
-        await self._repository.save(product)
+        await self._repository.add(product)
