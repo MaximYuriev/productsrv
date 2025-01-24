@@ -14,6 +14,15 @@ class ProductRepository(IProductRepository):
     def __init__(self, session: AsyncSession):
         self._session = session
 
+    async def add(self, product: Product) -> None:
+        product_model = self._convert_domain_to_model(product)
+        self._session.add(product_model)
+        await self._session.commit()
+
+    async def get_product_by_name(self, product_name: str) -> Product:
+        product_model = await self._get_product_model(name=product_name)
+        return self._convert_model_to_domain(product_model)
+
     def _convert_domain_to_model(self, product: Product) -> ProductModel:
         return self.model(
             product_id=product.product_id,
@@ -35,12 +44,3 @@ class ProductRepository(IProductRepository):
         if product_model is not None:
             return product_model
         raise ProductNotFoundException
-
-    async def add(self, product: Product) -> None:
-        product_model = self._convert_domain_to_model(product)
-        self._session.add(product_model)
-        await self._session.commit()
-
-    async def get_product_by_name(self, product_name: str) -> Product:
-        product_model = await self._get_product_model(name=product_name)
-        return self._convert_model_to_domain(product_model)
