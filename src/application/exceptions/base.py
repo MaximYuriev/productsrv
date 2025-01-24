@@ -1,0 +1,2 @@
+class ProductServiceException(Exception):
+    pass
