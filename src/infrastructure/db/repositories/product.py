@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.application.exceptions.product import ProductNotFoundException
 from src.application.interfaces.repositories.product import IProductRepository
 from src.domain.models.product import Product
+from src.domain.values.category import Category
 from src.infrastructure.db.models.product import ProductModel
 
 
@@ -27,6 +28,7 @@ class ProductRepository(IProductRepository):
         return self.model(
             product_id=product.product_id,
             name=product.name,
+            category=product.category.value,
             quantity=product.quantity,
             price=product.price,
         )
@@ -35,6 +37,7 @@ class ProductRepository(IProductRepository):
         return self.domain(
             product_id=product_model.product_id,
             name=product_model.name,
+            category=Category(product_model.category),
             quantity=product_model.quantity,
             price=product_model.price,
         )
