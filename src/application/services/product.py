@@ -13,6 +13,9 @@ class ProductService:
         await self._validate_product_name(product.name)
         await self._repository.add(product)
 
+    async def get_one_product(self, product_id: int) -> Product:
+        return await self._repository.get_product_by_id(product_id)
+
     async def _validate_product_name(self, product_name: str) -> None:
         try:
             await self._repository.get_product_by_name(product_name)

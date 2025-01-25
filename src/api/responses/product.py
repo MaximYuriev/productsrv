@@ -1,6 +1,6 @@
 from src.api.responses.base import BaseResponse
-from src.api.schemas.product import ProductSchema
+from src.api.schemas.product import ProductSchemaForResponse
 
 
 class ProductResponse(BaseResponse):
-    data: ProductSchema | None = None
+    data: ProductSchemaForResponse | None = None

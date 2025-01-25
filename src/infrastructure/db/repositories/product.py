@@ -24,6 +24,10 @@ class ProductRepository(IProductRepository):
         product_model = await self._get_product_model(name=product_name)
         return self._convert_model_to_domain(product_model)
 
+    async def get_product_by_id(self, product_id: int) -> Product:
+        product_model = await self._get_product_model(product_id=product_id)
+        return self._convert_model_to_domain(product_model)
+
     def _convert_domain_to_model(self, product: Product) -> ProductModel:
         return self.model(
             product_id=product.product_id,
