@@ -2,7 +2,6 @@ from src.application.dto.product import ProductDTO
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
 from src.application.interfaces.repositories.product import IProductRepository
 from src.domain.models.product import Product
-from src.domain.values.category import Category
 
 
 class ProductService:
@@ -25,6 +24,10 @@ class ProductService:
     ) -> list[Product]:
         offset = page_number - 1
         return await self._repository.get_products(offset=offset, limit=page_size, **kwargs)
+
+    async def delete_product(self, product_id: int) -> None:
+        product = await self.get_one_product(product_id)
+        await self._repository.delete_product(product)
 
     async def _validate_product_name(self, product_name: str) -> None:
         try:

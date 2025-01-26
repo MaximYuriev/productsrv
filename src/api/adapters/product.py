@@ -23,6 +23,9 @@ class FromRouterToProductServiceAdapter:
         products = await self._service.get_list_products(**pagination_params)
         return [self._convert_domain_to_response(product) for product in products]
 
+    async def delete_product(self, product_id: int) -> None:
+        await self._service.delete_product(product_id)
+
     @staticmethod
     def _convert_domain_to_response(product: Product) -> ProductSchemaForResponse:
         return ProductSchemaForResponse(

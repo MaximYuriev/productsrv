@@ -34,6 +34,11 @@ class ProductRepository(IProductRepository):
         models = await self._get_list_product_models(offset, limit, **kwargs)
         return [self._convert_model_to_domain(model) for model in models]
 
+    async def delete_product(self, product: Product) -> None:
+        product_model = await self._get_product_model(product_id=product.product_id)
+        await self._session.delete(product_model)
+        await self._session.commit()
+
     def _convert_domain_to_model(self, product: Product) -> ProductModel:
         return self.model(
             product_id=product.product_id,

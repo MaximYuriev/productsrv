@@ -4,6 +4,7 @@ from dishka.integrations.fastapi import inject, FromDishka
 from fastapi import APIRouter, HTTPException, status, Query
 
 from src.api.adapters.product import FromRouterToProductServiceAdapter
+from src.api.exceptions.product import HTTPProductNameNotUniqueException, HTTPProductNotFoundException
 from src.api.responses.product import ProductResponse
 from src.api.schemas.pagination import PaginationQueryParamsWithCategory
 from src.api.schemas.product import CreateProductSchema
@@ -21,10 +22,7 @@ async def create_new_product(
     try:
         await product_adapter.create_new_product(created_product_schema)
     except ProductNameNotUniqueException as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=exc.message,
-        )
+        raise HTTPProductNameNotUniqueException(exc.message)
     else:
         return ProductResponse(detail="Товар успешно добавлен!")
 
@@ -38,10 +36,7 @@ async def get_product_by_id(
     try:
         product = await product_adapter.get_product_by_id(product_id)
     except ProductNotFoundException as exc:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=exc.message,
-        )
+        raise HTTPProductNotFoundException(exc.message)
     else:
         return ProductResponse(detail="Товар найден!", data=product)
 
@@ -54,3 +49,17 @@ async def get_products(
 ):
     products = await product_adapter.get_list_products(pagination_params)
     return ProductResponse(detail="Найденные товары", data=products)
+
+
+@product_router.delete("/{product_id}")
+@inject
+async def delete_product(
+        product_id: int,
+        product_adapter: FromDishka[FromRouterToProductServiceAdapter],
+):
+    try:
+        await product_adapter.delete_product(product_id)
+    except ProductNotFoundException as exc:
+        raise HTTPProductNotFoundException(exc.message)
+    else:
+        return ProductResponse(detail="Товар успешно удален!")
