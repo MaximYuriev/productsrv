@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from src.application.dto.product import UpdateProductDTO
 from src.domain.models.product import Product
 
 
@@ -18,3 +19,6 @@ class IProductRepository(ABC):
 
     @abstractmethod
     async def delete_product(self, product: Product) -> None: ...
+
+    @abstractmethod
+    async def update_product(self, update_product_data: UpdateProductDTO) -> None: ...

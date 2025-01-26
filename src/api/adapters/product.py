@@ -1,6 +1,6 @@
 from src.api.schemas.pagination import PaginationQueryParams
-from src.api.schemas.product import CreateProductSchema, ProductSchemaForResponse
-from src.application.dto.product import ProductDTO
+from src.api.schemas.product import CreateProductSchema, ProductSchemaForResponse, UpdateProductSchema
+from src.application.dto.product import ProductDTO, UpdateProductDTO
 from src.application.services.product import ProductService
 from src.domain.models.product import Product
 
@@ -25,6 +25,13 @@ class FromRouterToProductServiceAdapter:
 
     async def delete_product(self, product_id: int) -> None:
         await self._service.delete_product(product_id)
+
+    async def update_product(self, product_id: int, update_product_schema: UpdateProductSchema) -> None:
+        update_product_data = UpdateProductDTO(
+            product_id=product_id,
+            **update_product_schema.model_dump(exclude_none=True),
+        )
+        await self._service.update_product(update_product_data)
 
     @staticmethod
     def _convert_domain_to_response(product: Product) -> ProductSchemaForResponse:

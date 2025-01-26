@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from src.domain.values.category import Category
 
@@ -9,3 +9,12 @@ class ProductDTO:
     category: Category
     quantity: int
     price: int
+
+
+@dataclass
+class UpdateProductDTO(ProductDTO):
+    product_id: int
+    name: str | None = field(default=None, kw_only=True)
+    category: Category | None = field(default=None, kw_only=True)
+    quantity: int | None = field(default=None, kw_only=True)
+    price: int | None = field(default=None, kw_only=True)

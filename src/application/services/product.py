@@ -1,4 +1,4 @@
-from src.application.dto.product import ProductDTO
+from src.application.dto.product import ProductDTO, UpdateProductDTO
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
 from src.application.interfaces.repositories.product import IProductRepository
 from src.domain.models.product import Product
@@ -28,6 +28,11 @@ class ProductService:
     async def delete_product(self, product_id: int) -> None:
         product = await self.get_one_product(product_id)
         await self._repository.delete_product(product)
+
+    async def update_product(self, update_product: UpdateProductDTO) -> None:
+        if update_product.name:
+            await self._validate_product_name(update_product.name)
+        await self._repository.update_product(update_product)
 
     async def _validate_product_name(self, product_name: str) -> None:
         try:

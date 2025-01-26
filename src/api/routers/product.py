@@ -7,7 +7,7 @@ from src.api.adapters.product import FromRouterToProductServiceAdapter
 from src.api.exceptions.product import HTTPProductNameNotUniqueException, HTTPProductNotFoundException
 from src.api.responses.product import ProductResponse
 from src.api.schemas.pagination import PaginationQueryParamsWithCategory
-from src.api.schemas.product import CreateProductSchema
+from src.api.schemas.product import CreateProductSchema, UpdateProductSchema
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
 
 product_router = APIRouter(prefix="/product", tags=["Product"])
@@ -63,3 +63,20 @@ async def delete_product(
         raise HTTPProductNotFoundException(exc.message)
     else:
         return ProductResponse(detail="Товар успешно удален!")
+
+
+@product_router.patch("/{product_id}")
+@inject
+async def update_product(
+        product_id: int,
+        update_product_schema: UpdateProductSchema,
+        product_adapter: FromDishka[FromRouterToProductServiceAdapter],
+):
+    try:
+        await product_adapter.update_product(product_id, update_product_schema)
+    except ProductNotFoundException as exc:
+        raise HTTPProductNotFoundException(exc.message)
+    except ProductNameNotUniqueException as exc:
+        raise HTTPProductNameNotUniqueException(exc.message)
+    else:
+        return ProductResponse(detail="Товар успешно изменен!")

@@ -19,5 +19,12 @@ class CreateProductSchema(ProductSchema):
     price: int = Field(gt=0)
 
 
+class UpdateProductSchema(ProductSchema):
+    name: str | None = Field(default=None, min_lenth=5, max_lenth=20)
+    category: Category | None = None
+    quantity: int | None = Field(default=None, gt=0, le=1000)
+    price: int | None = Field(default=None, gt=0)
+
+
 class ProductSchemaForResponse(ProductSchema):
     product_id: int

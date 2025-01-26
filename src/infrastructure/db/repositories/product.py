@@ -3,6 +3,7 @@ from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.application.dto.product import UpdateProductDTO
 from src.application.exceptions.product import ProductNotFoundException
 from src.application.interfaces.repositories.product import IProductRepository
 from src.domain.models.product import Product
@@ -38,6 +39,12 @@ class ProductRepository(IProductRepository):
         product_model = await self._get_product_model(product_id=product.product_id)
         await self._session.delete(product_model)
         await self._session.commit()
+
+    async def update_product(self, update_product_data: UpdateProductDTO) -> None:
+        product_model = await self._get_product_model(product_id=update_product_data.product_id)
+        for key, value in update_product_data.__dict__.items():
+            if key != "product_id" and value is not None:
+                setattr(product_model, key, value)
 
     def _convert_domain_to_model(self, product: Product) -> ProductModel:
         return self.model(
