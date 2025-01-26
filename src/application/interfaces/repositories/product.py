@@ -12,3 +12,6 @@ class IProductRepository(ABC):
 
     @abstractmethod
     async def get_product_by_id(self, product_id: int) -> Product: ...
+
+    @abstractmethod
+    async def get_products(self, offset: int, limit: int, **kwargs) -> list[Product]: ...

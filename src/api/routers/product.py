@@ -1,8 +1,11 @@
+from typing import Annotated
+
 from dishka.integrations.fastapi import inject, FromDishka
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 
 from src.api.adapters.product import FromRouterToProductServiceAdapter
 from src.api.responses.product import ProductResponse
+from src.api.schemas.pagination import PaginationQueryParamsWithCategory
 from src.api.schemas.product import CreateProductSchema
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
 
@@ -41,3 +44,13 @@ async def get_product_by_id(
         )
     else:
         return ProductResponse(detail="Товар найден!", data=product)
+
+
+@product_router.get("")
+@inject
+async def get_products(
+        pagination_params: Annotated[PaginationQueryParamsWithCategory, Query()],
+        product_adapter: FromDishka[FromRouterToProductServiceAdapter],
+):
+    products = await product_adapter.get_list_products(pagination_params)
+    return ProductResponse(detail="Найденные товары", data=products)

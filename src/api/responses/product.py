@@ -3,4 +3,4 @@ from src.api.schemas.product import ProductSchemaForResponse
 
 
 class ProductResponse(BaseResponse):
-    data: ProductSchemaForResponse | None = None
+    data: ProductSchemaForResponse | list[ProductSchemaForResponse] | None = None
