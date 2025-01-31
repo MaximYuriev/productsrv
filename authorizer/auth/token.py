@@ -1,14 +1,14 @@
 import jwt
 
-from config import PRIVATE_KEY_PATH, PUBLIC_KEY_PATH
 from .payloads import BasePayload
 from .exceptions import AuthTokenInvalidException, AuthTokenExpiredException
+from ..config import authorizer_config
 
 
 class JWT:
     __CRYPT_ALGORITHM = 'RS256'
-    __PUBLIC_KEY = PUBLIC_KEY_PATH.read_text()
-    __PRIVATE_KEY = PRIVATE_KEY_PATH.read_text()
+    __PUBLIC_KEY = authorizer_config.ssl.public_key_path.read_text()
+    __PRIVATE_KEY = authorizer_config.ssl.private_key_path.read_text()
 
     @classmethod
     def create_jwt(
