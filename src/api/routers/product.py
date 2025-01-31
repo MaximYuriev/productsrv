@@ -1,8 +1,9 @@
 from typing import Annotated
 
 from dishka.integrations.fastapi import inject, FromDishka
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, Query, Depends
 
+from authorizer.http.dependencies import check_user_is_admin
 from src.api.adapters.product import FromRouterToProductServiceAdapter
 from src.api.exceptions.product import HTTPProductNameNotUniqueException, HTTPProductNotFoundException
 from src.api.responses.product import ProductResponse
@@ -13,7 +14,7 @@ from src.application.exceptions.product import ProductNameNotUniqueException, Pr
 product_router = APIRouter(prefix="/product", tags=["Product"])
 
 
-@product_router.post("")
+@product_router.post("", dependencies=[Depends(check_user_is_admin)])
 @inject
 async def create_new_product(
         created_product_schema: CreateProductSchema,
@@ -51,7 +52,7 @@ async def get_products(
     return ProductResponse(detail="Найденные товары", data=products)
 
 
-@product_router.delete("/{product_id}")
+@product_router.delete("/{product_id}", dependencies=[Depends(check_user_is_admin)])
 @inject
 async def delete_product(
         product_id: int,
@@ -65,7 +66,7 @@ async def delete_product(
         return ProductResponse(detail="Товар успешно удален!")
 
 
-@product_router.patch("/{product_id}")
+@product_router.patch("/{product_id}", dependencies=[Depends(check_user_is_admin)])
 @inject
 async def update_product(
         product_id: int,
