@@ -23,3 +23,11 @@ class HTTPUnauthorizedException(HTTPException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Необходимо авторизоваться!",
         )
+
+
+class HTTPUserIsNotAdminException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Пользователь не обладает необходимыми правами!",
+        )
