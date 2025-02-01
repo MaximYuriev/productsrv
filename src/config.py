@@ -33,3 +33,4 @@ class RMQConfig(BaseConfig):
 
 class Config(BaseSettings):
     postgres: PostgresConfig = Field(default_factory=PostgresConfig)
+    rabbitmq: RMQConfig = Field(default_factory=RMQConfig)
