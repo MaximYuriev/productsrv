@@ -18,10 +18,11 @@ class ProductRepository(IProductRepository):
     def __init__(self, session: AsyncSession):
         self._session = session
 
-    async def add(self, product: Product) -> None:
+    async def add(self, product: Product) -> int:
         product_model = self._convert_domain_to_model(product)
         self._session.add(product_model)
         await self._session.commit()
+        return product_model.product_id
 
     async def get_product_by_name(self, product_name: str) -> Product:
         product_model = await self._get_product_model(name=product_name)

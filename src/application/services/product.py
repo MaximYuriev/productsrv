@@ -11,9 +11,9 @@ class ProductService:
         self._publisher = publisher
 
     async def create_new_product(self, created_product: ProductDTO) -> None:
+        await self._validate_product_name(created_product.name)
         product = Product(**created_product.__dict__)
-        await self._validate_product_name(product.name)
-        await self._repository.add(product)
+        product.product_id = await self._repository.add(product)
         await self._publisher.publish_create_product(product)
 
     async def get_one_product(self, product_id: int) -> Product:
