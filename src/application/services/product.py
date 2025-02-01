@@ -34,10 +34,10 @@ class ProductService:
         await self._publisher.publish_delete_product(product)
 
     async def update_product(self, product_id: int, update_product: UpdateProductDTO) -> None:
-        if update_product.name:
+        if update_product.name is not None:
             await self._validate_product_name(update_product.name)
         product = await self._repository.update_product(product_id, update_product)
-        if update_product.name or update_product.price:
+        if update_product.name is not None or update_product.price is not None:
             await self._publisher.publish_update_product(product)
 
     async def _validate_product_name(self, product_name: str) -> None:
