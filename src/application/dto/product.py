@@ -13,7 +13,6 @@ class ProductDTO:
 
 @dataclass
 class UpdateProductDTO(ProductDTO):
-    product_id: int
     name: str | None = field(default=None, kw_only=True)
     category: Category | None = field(default=None, kw_only=True)
     quantity: int | None = field(default=None, kw_only=True)

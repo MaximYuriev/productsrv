@@ -27,11 +27,10 @@ class FromRouterToProductServiceAdapter:
         await self._service.delete_product(product_id)
 
     async def update_product(self, product_id: int, update_product_schema: UpdateProductSchema) -> None:
-        update_product_data = UpdateProductDTO(
-            product_id=product_id,
+        update_product_dto = UpdateProductDTO(
             **update_product_schema.model_dump(exclude_none=True),
         )
-        await self._service.update_product(update_product_data)
+        await self._service.update_product(product_id, update_product_dto)
 
     @staticmethod
     def _convert_domain_to_response(product: Product) -> ProductSchemaForResponse:

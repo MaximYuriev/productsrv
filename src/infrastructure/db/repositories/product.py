@@ -40,11 +40,14 @@ class ProductRepository(IProductRepository):
         await self._session.delete(product_model)
         await self._session.commit()
 
-    async def update_product(self, update_product_data: UpdateProductDTO) -> None:
-        product_model = await self._get_product_model(product_id=update_product_data.product_id)
-        for key, value in update_product_data.__dict__.items():
+    async def update_product(self, product_id: int, update_product_dto: UpdateProductDTO) -> Product:
+        product_model = await self._get_product_model(product_id=product_id)
+        update_product_data = update_product_dto.__dict__
+        for key, value in update_product_data.items():
             if key != "product_id" and value is not None:
                 setattr(product_model, key, value)
+        await self._session.commit()
+        return self._convert_model_to_domain(product_model)
 
     def _convert_domain_to_model(self, product: Product) -> ProductModel:
         return self.model(
