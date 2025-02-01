@@ -37,7 +37,8 @@ class ProductService:
         if update_product.name:
             await self._validate_product_name(update_product.name)
         product = await self._repository.update_product(product_id, update_product)
-        await self._publisher.publish_update_product(product)
+        if update_product.name or update_product.price:
+            await self._publisher.publish_update_product(product)
 
     async def _validate_product_name(self, product_name: str) -> None:
         try:
