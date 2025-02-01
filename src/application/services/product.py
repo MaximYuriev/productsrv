@@ -1,17 +1,20 @@
 from src.application.dto.product import ProductDTO, UpdateProductDTO
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
+from src.application.interfaces.broker.product import IProductPublisher
 from src.application.interfaces.repositories.product import IProductRepository
 from src.domain.models.product import Product
 
 
 class ProductService:
-    def __init__(self, repository: IProductRepository) -> None:
+    def __init__(self, repository: IProductRepository, publisher: IProductPublisher) -> None:
         self._repository = repository
+        self._publisher = publisher
 
     async def create_new_product(self, created_product: ProductDTO) -> None:
         product = Product(**created_product.__dict__)
         await self._validate_product_name(product.name)
         await self._repository.add(product)
+        await self._publisher.publish_create_product(product)
 
     async def get_one_product(self, product_id: int) -> Product:
         return await self._repository.get_product_by_id(product_id)
@@ -28,6 +31,7 @@ class ProductService:
     async def delete_product(self, product_id: int) -> None:
         product = await self.get_one_product(product_id)
         await self._repository.delete_product(product)
+        await self._publisher.publish_delete_product(product)
 
     async def update_product(self, update_product: UpdateProductDTO) -> None:
         if update_product.name:
