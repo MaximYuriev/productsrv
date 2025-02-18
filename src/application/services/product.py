@@ -1,3 +1,4 @@
+from src.application.dto.order import OrderDTO
 from src.application.dto.product import ProductDTO, UpdateProductDTO
 from src.application.exceptions.product import ProductNameNotUniqueException, ProductNotFoundException
 from src.application.interfaces.broker.product import IProductPublisher
@@ -47,6 +48,31 @@ class ProductService:
             if update_product.name is not None or update_product.price is not None:
                 await self._publisher.publish_update_product(product)
             await self._uow.commit()
+
+    async def purchase_product(self, order: OrderDTO) -> None:
+        async with self._uow:
+            for purchased_product in order.purchased_product_list:
+                try:
+                    product = await self._uow.product_repository.get_product_by_id(purchased_product.product_id)
+                except ProductNotFoundException:
+                    await self._publisher.cancel_order(
+                        order.order_id,
+                        reason=f"Товар с id = {purchased_product.product_id} не найден!",
+                    )
+                else:
+                    if product.quantity >= purchased_product.quantity:
+                        update_product = UpdateProductDTO(
+                            quantity=product.quantity - purchased_product.quantity,
+                        )
+                        await self._uow.product_repository.update_product(product.product_id, update_product)
+                        await self._uow.commit()
+                    else:
+                        await self._publisher.cancel_order(
+                            order.order_id,
+                            reason=f"На складе нет указанного количества товара. Товар с id = {product.product_id}"
+                                   f"имеется в количестве {product.quantity}."
+                                   f"Было запрошено - {purchased_product.quantity}"
+                        )
 
     async def _validate_product_name(self, product_name: str) -> None:
         try:

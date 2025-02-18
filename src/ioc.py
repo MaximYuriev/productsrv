@@ -9,6 +9,7 @@ from src.application.interfaces.broker.product import IProductPublisher
 from src.application.interfaces.uow.product import IProductUoW
 from src.application.services.product import ProductService
 from src.config import Config
+from src.infrastructure.broker.consumers.adapters.product import ProductBrokerAdapter
 from src.infrastructure.broker.publishers.product import RMQProductPublisher
 from src.infrastructure.db.settings import create_async_session_maker
 from src.infrastructure.db.uow.product import ProductUoW
@@ -35,3 +36,4 @@ class AppProvider(Provider):
     product_publisher = provide(RMQProductPublisher, scope=Scope.REQUEST, provides=IProductPublisher)
     product_service = provide(ProductService, scope=Scope.REQUEST)
     product_adapter = provide(FromRouterToProductServiceAdapter, scope=Scope.REQUEST)
+    product_broker_adapter = provide(ProductBrokerAdapter, scope=Scope.REQUEST)

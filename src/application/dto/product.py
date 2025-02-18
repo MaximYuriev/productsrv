@@ -17,3 +17,9 @@ class UpdateProductDTO(ProductDTO):
     category: Category | None = field(default=None, kw_only=True)
     quantity: int | None = field(default=None, kw_only=True)
     price: int | None = field(default=None, kw_only=True)
+
+
+@dataclass
+class PurchasedProductDTO:
+    product_id: int
+    quantity: int
