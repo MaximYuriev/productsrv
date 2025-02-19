@@ -65,7 +65,6 @@ class ProductService:
                             quantity=product.quantity - purchased_product.quantity,
                         )
                         await self._uow.product_repository.update_product(product.product_id, update_product)
-                        await self._uow.commit()
                     else:
                         await self._publisher.cancel_order(
                             order.order_id,
@@ -73,6 +72,9 @@ class ProductService:
                                    f"имеется в количестве {product.quantity}."
                                    f"Было запрошено - {purchased_product.quantity}"
                         )
+                        await self._uow.rollback()
+                        return
+            await self._uow.commit()
 
     async def _validate_product_name(self, product_name: str) -> None:
         try:
