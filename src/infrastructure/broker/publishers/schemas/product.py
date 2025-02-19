@@ -15,3 +15,7 @@ class UpdateProductBrokerSchema(PublishBrokerSchema):
 
 class DeleteProductBrokerSchema(PublishBrokerSchema):
     product_id: int
+
+
+class PurchasedProductPublishSchema(PublishBrokerSchema):
+   product_id: int

@@ -76,6 +76,9 @@ class ProductService:
                         return
             await self._uow.commit()
 
+        await self._publisher.accept_order(order)
+        await self._publisher.clear_basket(order)
+
     async def _validate_product_name(self, product_name: str) -> None:
         try:
             await self._uow.product_repository.get_product_by_name(product_name)
